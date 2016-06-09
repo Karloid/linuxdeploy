@@ -12,6 +12,7 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.method.LinkMovementMethod;
@@ -32,6 +33,7 @@ public class MainActivity extends SherlockActivity {
     private static ScrollView scroll;
     private static WifiLock wifiLock;
     final static int NOTIFY_ID = 1;
+    private PowerManager.WakeLock wakeLock;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,6 +97,9 @@ public class MainActivity extends SherlockActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog,
                                         int id) {
+                                    PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                                    wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Tag");
+                                    wakeLock.acquire();
                                     new ExecScript(getApplicationContext(),
                                             "start").start();
                                     // actions
@@ -146,6 +151,9 @@ public class MainActivity extends SherlockActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog,
                                         int id) {
+                                    if (wakeLock != null) {
+                                        wakeLock.release();
+                                    }
                                     new ExecScript(getApplicationContext(),
                                             "stop").start();
                                 }
@@ -165,12 +173,12 @@ public class MainActivity extends SherlockActivity {
             try {
                 Intent intent_terminal = new Intent("jackpal.androidterm.RUN_SCRIPT");
                 intent_terminal.addCategory(Intent.CATEGORY_DEFAULT);
-                intent_terminal.putExtra("jackpal.androidterm.iInitialCommand", 
+                intent_terminal.putExtra("jackpal.androidterm.iInitialCommand",
                     PrefStore.getTerminalCmd(this));
                 startActivity(intent_terminal);
             } catch(Exception e) {
-                Toast.makeText(getApplicationContext(), 
-                        R.string.toast_terminal_error, Toast.LENGTH_SHORT).show(); 
+                Toast.makeText(getApplicationContext(),
+                        R.string.toast_terminal_error, Toast.LENGTH_SHORT).show();
             }
             break;
         case R.id.menu_properties:
@@ -254,7 +262,7 @@ public class MainActivity extends SherlockActivity {
 
     /**
      * Show message in TextView, used from Logger
-     * 
+     *
      * @param log message
      */
     public static void showLog(final String log) {
@@ -284,7 +292,7 @@ public class MainActivity extends SherlockActivity {
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                     context)
                     .setSmallIcon(R.drawable.ic_launcher)
-                    .setContentTitle(context.getString(R.string.app_name))
+                    .setContentTitle(context.getString(R.string.app_name_custom))
                     .setContentText(
                             context.getString(R.string.notification_current_profile)
                                     + ": "
