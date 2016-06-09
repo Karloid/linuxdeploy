@@ -292,7 +292,7 @@ public class MainActivity extends SherlockActivity {
             Intent resultIntent = intent;
             if (resultIntent == null)
                 resultIntent = new Intent(context, MainActivity.class);
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.from(context);
             stackBuilder.addParentStack(MainActivity.class);
             stackBuilder.addNextIntent(resultIntent);
             PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
@@ -300,7 +300,7 @@ public class MainActivity extends SherlockActivity {
             mBuilder.setContentIntent(resultPendingIntent);
             mBuilder.setOngoing(true);
             mBuilder.setWhen(0);
-            mNotificationManager.notify(NOTIFY_ID, mBuilder.build());
+            mNotificationManager.notify(NOTIFY_ID, mBuilder.getNotification());
         } else {
             mNotificationManager.cancel(NOTIFY_ID);
         }

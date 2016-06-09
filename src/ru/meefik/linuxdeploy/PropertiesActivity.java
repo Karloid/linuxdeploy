@@ -276,7 +276,7 @@ public class PropertiesActivity extends SherlockPreferenceActivity implements
 				ListPreference suite = (ListPreference) findPreference("suite");
 				ListPreference architecture = (ListPreference) findPreference("architecture");
 				EditTextPreference mirror = (EditTextPreference) findPreference("mirror");
-				MultiSelectListPreferenceCompat components = (MultiSelectListPreferenceCompat) 
+				MultiSelectListPreferenceCompat components = (MultiSelectListPreferenceCompat)
 						findPreference("xcomponents");
 
 				String distributionStr = listPref.getValue();
